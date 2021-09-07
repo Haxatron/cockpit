@@ -217,8 +217,6 @@ class Accounts extends \Cockpit\AuthController {
         $options = array_merge([
             'sort'   => ['user' => 1]
         ], $this->param('options', []));
-
-        $options = ['user' => $options['user'], 'name' => $options['name'], 'email' => $options['email']];
         
         if (isset($options['filter']) && is_string($options['filter'])) {
 
