@@ -218,6 +218,8 @@ class Accounts extends \Cockpit\AuthController {
             'sort'   => ['user' => 1]
         ], $this->param('options', []));
 
+        $options = ['user' => $options['user'], 'name' => $options['name'], 'email' => $options['email']];
+        
         if (isset($options['filter']) && is_string($options['filter'])) {
 
             $filter = null;
