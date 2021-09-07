@@ -214,10 +214,8 @@ class Accounts extends \Cockpit\AuthController {
 
         \session_write_close();
 
-        $options = array_merge([
-            'sort'   => ['user' => 1]
-        ], $this->param('options', []));
-        
+        $options = $this->param('options', []);
+
         if (isset($options['filter']) && is_string($options['filter'])) {
 
             $filter = null;
@@ -228,6 +226,7 @@ class Accounts extends \Cockpit\AuthController {
                     $filter = json5_decode($options['filter'], true);
                 } catch (\Exception $e) {}
             }
+            
 
             if (!$filter) {
                 $filter = [
@@ -239,10 +238,19 @@ class Accounts extends \Cockpit\AuthController {
                 ];
             }
 
-            $options['filter'] = $filter;
+            $query['filter'] = $filter;
+
+        } else {
+            foreach (['name', 'user', 'email'] as $key) {
+                if (isset($options['filter'][$key])) $query['filter'][$key] = $options['filter'][$key];
+            }
         }
 
-        $accounts = $this->app->storage->find('cockpit/accounts', $options)->toArray();
+        $query = array_merge([
+            'sort'   => ['user' => 1]
+        ], $query);
+
+        $accounts = $this->app->storage->find('cockpit/accounts', $query)->toArray();
         $count    = (!isset($options['skip']) && !isset($options['limit'])) ? count($accounts) : $this->app->storage->count('cockpit/accounts', isset($options['filter']) ? $options['filter'] : []);
         $pages    = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page     = 1;
