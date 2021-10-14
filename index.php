@@ -13,6 +13,9 @@ define('COCKPIT_ADMIN', 1);
 // set default timezone
 date_default_timezone_set('UTC');
 
+// prevent clickjacking
+header("X-Frame-Options: SAMEORIGIN");
+
 // handle php webserver
 if (PHP_SAPI == 'cli-server' && is_file(__DIR__.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
     return false;
